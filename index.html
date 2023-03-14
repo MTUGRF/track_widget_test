@@ -62,17 +62,12 @@
         // Calculate the rotation angle for the arrow symbol
         const rotationAngle = -newHeading + 90;
 
-        // Update the symbol for the graphic indicating the user's location
-        track.graphic.symbol = new SimpleMarkerSymbol({
-          size: "20px",
-          color: [0, 0, 255],
-          outline: {
-            color: [255, 255, 255],
-            width: 2
-          },
-          angle: rotationAngle
-        });
-      });
+        track.graphic.symbol = {
+    type: "simple-arrow",
+    color: "white",
+    size: "24px",
+    rotation: rotationAngle
+  };
 
        // Add the Track widget to the view
   view.ui.add(track, "top-right");
