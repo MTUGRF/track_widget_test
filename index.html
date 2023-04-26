@@ -71,7 +71,7 @@ const track = new Track({
   const { heading } = position.coords;
 
   // Rotate the arrow symbol based on the device's heading.
-  arrowSymbol.angle = heading || 0;
+  arrowGraphic.symbol.angle = heading || 0;
 }
 
 function onGeolocationError(error) {
