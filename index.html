@@ -92,6 +92,9 @@ const track = new Track({
             }*/
 
   var graphic = view.graphics.getItemAt(0);
+  if (newGraphic) {
+    view.graphics.remove(newGraphic);
+  }
     var newGraphic = graphic.clone();
     view.graphics.remove(graphic);
     newGraphic.symbol.angle = heading;
