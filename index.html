@@ -26,8 +26,9 @@
       "esri/Graphic",
       "esri/symbols/SimpleLineSymbol",
       "esri/symbols/SimpleMarkerSymbol",
-      "esri/symbols/SimpleFillSymbol"
-    ], function(Map, MapView, Track, Graphic, SimpleLineSymbol, SimpleMarkerSymbol, SimpleFillSymbol) {
+      "esri/symbols/SimpleFillSymbol",
+      "esri/geometry/Point"
+    ], function(Map, MapView, Track, Graphic, SimpleLineSymbol, SimpleMarkerSymbol, SimpleFillSymbol, Point) {
 
       // Create a new Map instance
       const map = new Map({
@@ -42,7 +43,7 @@
         zoom: 13
       });
 
-   const pointSymbol = {
+  const pointSymbol = {
   type: "simple-marker",
   color: [255, 255, 255, 1], // white
   size: 10,
@@ -62,32 +63,44 @@ const arrowSymbol = {
   },
   size: 25,
   angle: 0, // this will be updated with the device heading
-  yoffset: -15 // offset the arrow symbol up to attach it to the point symbol
+  yoffset: -12 // offset the arrow symbol up to attach it to the point symbol
 };
 
 const pointGraphic = new Graphic({
-  symbol: pointSymbol
+  symbol: pointSymbol,
+  geometry: null
 });
 
 const arrowGraphic = new Graphic({
-  symbol: arrowSymbol
+  symbol: arrowSymbol,
+  geometry: null
 });
 
 const track = new Track({
   view: view,
-  graphics: [arrowGraphic]
+  graphic: pointGraphic
 });
 
 // Add the Track widget to the view
 view.ui.add(track, "top-right");
 
 function onGeolocationSuccess(position) {
-  const { heading } = position.coords;
+  const { latitude, longitude, heading } = position.coords;
 
-  // Rotate the arrow symbol based on the device's heading.
-  arrowGraphic.symbol.angle = heading || 0;
+  // Update the position of the point symbol
+  const point = new Point({
+    latitude: latitude,
+    longitude: longitude
+  });
+  pointGraphic.geometry = point;
+
+  // Update the angle of the arrow symbol
+  arrowSymbol.angle = heading || 0;
+  arrowGraphic.geometry = point;
+
+  view.graphics.remove(arrowGraphic);
+  view.graphics.add(arrowGraphic);
 }
-
 function onGeolocationError(error) {
   console.error("Geolocation error: ", error);
 }
