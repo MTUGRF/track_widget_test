@@ -73,10 +73,22 @@ const track = new Track({
 
   function onGeolocationSuccess(position) {
     console.log(position);
-  const heading = position.coords.heading;
+  let heading;
+  window.addEventListener("deviceorientation", (event) => {
+  console.log(`${event.alpha} : ${event.beta} : ${event.gamma}`);
+
+  
+            if (`${event.webkitCompassHeading}`) {
+                // Safari
+                heading = `${event.webkitCompassHeading}`;
+            } else if (`${event.absolute}` === true) {
+                // non-Safari alpha increases counter clockwise around the z axis
+                heading = `${event.alpha}` * -1;
+            }
 
   // Rotate the arrow symbol based on the device's heading.
   arrowGraphic.symbol.angle = heading;
+});
 }
 
 function onGeolocationError(error) {
