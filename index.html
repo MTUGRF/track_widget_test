@@ -77,17 +77,23 @@ const track = new Track({
   window.addEventListener("deviceorientation", (event) => {
   console.log(`${event.alpha} : ${event.beta} : ${event.gamma}`);
 
+  heading = `${event.alpha}` * -1;
+/*
   
             if (`${event.webkitCompassHeading}`) {
                 // Safari
                 heading = `${event.webkitCompassHeading}`;
+                console.log(heading);
             } else if (`${event.absolute}` === true) {
+              console.log(heading);
                 // non-Safari alpha increases counter clockwise around the z axis
                 heading = `${event.alpha}` * -1;
-            }
+                console.log(heading);
+            }*/
 
   // Rotate the arrow symbol based on the device's heading.
-  arrowSymbol.angle = heading;
+  arrowGraphic.symbol.angle = heading;
+  console.log(heading);
 });
 }
 
@@ -98,7 +104,7 @@ function onGeolocationError(error) {
 const geolocationOptions = {
   enableHighAccuracy: true,
   maximumAge: 0,
-  timeout: 5000
+  timeout: 50
 };
 
 if (navigator.geolocation) {
