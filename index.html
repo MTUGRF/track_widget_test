@@ -91,8 +91,15 @@ const track = new Track({
                 console.log(heading);
             }*/
 
+  var graphic = view.graphics.getItemAt(0);
+    var newGraphic = graphic.clone();
+    view.graphics.remove(graphic);
+    newGraphic.symbol.angle = heading;
+    view.graphics.add(newGraphic);
+  
+
   // Rotate the arrow symbol based on the device's heading.
-  arrowGraphic.symbol.angle = heading;
+  //arrowSymbol.angle = 172;
   console.log(heading);
 });
 }
