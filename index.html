@@ -97,8 +97,8 @@ function onGeolocationSuccess(position) {
   pointGraphic.geometry = point;
 
   // Update the angle of the arrow symbol
-  arrowSymbol.angle = heading || 0;
-  pointSymbol.angle = heading || 0;
+  arrowGraphic.symbol.angle = heading || 0;
+  pointGraphic.symbol.angle = heading || 0;
   arrowGraphic.geometry = point;
 
   view.graphics.remove(arrowGraphic);
