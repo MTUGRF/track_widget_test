@@ -62,7 +62,7 @@ const arrowSymbol = {
   },
   size: 25,
   angle: 0, // this will be updated with the device heading
-  yoffset: -12 // offset the arrow symbol up to attach it to the point symbol
+  yoffset: -15 // offset the arrow symbol up to attach it to the point symbol
 };
 
 const pointGraphic = new Graphic({
@@ -75,7 +75,7 @@ const arrowGraphic = new Graphic({
 
 const track = new Track({
   view: view,
-  graphics: [pointGraphic, arrowGraphic]
+  graphics: [arrowGraphic]
 });
 
 // Add the Track widget to the view
