@@ -67,43 +67,38 @@ const arrowSymbol = {
   yoffset: 10 // offset the arrow symbol up to attach it to the point symbol
 };
 
-const pointGraphic = new Graphic({
-  symbol: pointSymbol,
-  geometry: null
-});
+const arrowSymbol = {
+  type: "simple-marker",
+  path: "M10,0 L20,30 L10,20 L0,30 Z",
+  color: [0, 0, 255, 1],
+  outline: {
+    color: [0, 0, 0, 1],
+    width: 1
+  },
+  size: 25
+};
+
 
 const arrowGraphic = new Graphic({
-  symbol: arrowSymbol,
-  geometry: null
+  symbol: arrowSymbol
 });
 
 const track = new Track({
   view: view,
-  graphic: pointGraphic,
-  useHeadingEnabled: false
+  graphic: arrowGraphic
 });
 
-// Add the Track widget to the view
-view.ui.add(track, "top-right");
 
-function onGeolocationSuccess(position) {
-  const { latitude, longitude, heading } = position.coords;
+       // Add the Track widget to the view
+  view.ui.add(track, "top-right");
 
-  // Update the position of the point symbol
-  const point = new Point({
-    latitude: latitude,
-    longitude: longitude
-  });
-  pointGraphic.geometry = point;
+  function onGeolocationSuccess(position) {
+  const { heading } = position.coords;
 
-  // Update the angle of the arrow symbol
+  // Rotate the arrow symbol based on the device's heading.
   arrowGraphic.symbol.angle = heading || 0;
-  pointGraphic.symbol.angle = heading || 0;
-  arrowGraphic.geometry = point;
-
-  view.graphics.remove(arrowGraphic);
-  view.graphics.add(arrowGraphic);
 }
+
 function onGeolocationError(error) {
   console.error("Geolocation error: ", error);
 }
