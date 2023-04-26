@@ -71,11 +71,9 @@ const track = new Track({
        // Add the Track widget to the view
   view.ui.add(track, "top-right");
 
-  function onGeolocationSuccess(position) {
-    console.log(position);
-  let heading;
+    let heading;
   window.addEventListener("deviceorientation", (event) => {
-  console.log(`${event.alpha} : ${event.beta} : ${event.gamma}`);
+  console.log(`${event.alpha} : ${event.beta} : ${event.gamma} : ${event.absolute} : ${event.webkitCompassHeading}`);
 
   heading = `${event.alpha}` * -1;
 /*
@@ -91,10 +89,8 @@ const track = new Track({
                 console.log(heading);
             }*/
 
-  var graphic = view.graphics.getItemAt(0);
-  if (newGraphic) {
-    view.graphics.remove(newGraphic);
-  }
+     var graphic = view.graphics.getItemAt(0);
+  
     var newGraphic = graphic.clone();
     view.graphics.remove(graphic);
     newGraphic.symbol.angle = heading;
@@ -105,6 +101,10 @@ const track = new Track({
   //arrowSymbol.angle = 172;
   console.log(heading);
 });
+
+  function onGeolocationSuccess(position) {
+    console.log(position);
+
 }
 
 function onGeolocationError(error) {
