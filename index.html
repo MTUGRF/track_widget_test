@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
   <title>ArcGIS JS API - Track Widget Example</title>
-  <link rel="stylesheet" href="https://js.arcgis.com/4.22/esri/themes/light/main.css">
-  <script src="https://js.arcgis.com/4.22/"></script>
+  <link rel="stylesheet" href="https://js.arcgis.com/4.26/esri/themes/light/main.css">
+  <script src="https://js.arcgis.com/4.26/"></script>
 
   <style>
     html, body, #viewDiv {
@@ -42,7 +42,17 @@
         zoom: 13
       });
 
-     const arrowSymbol = {
+   const pointSymbol = {
+  type: "simple-marker",
+  color: [255, 255, 255, 1], // white
+  size: 10,
+  outline: {
+    color: [0, 0, 0, 1], // black
+    width: 1
+  }
+};
+
+const arrowSymbol = {
   type: "simple-marker",
   path: "M10,0 L20,30 L10,20 L0,30 Z",
   color: [0, 0, 255, 1],
@@ -50,9 +60,14 @@
     color: [0, 0, 0, 1],
     width: 1
   },
-  size: 25
+  size: 25,
+  angle: 0, // this will be updated with the device heading
+  yoffset: -12 // offset the arrow symbol up to attach it to the point symbol
 };
 
+const pointGraphic = new Graphic({
+  symbol: pointSymbol
+});
 
 const arrowGraphic = new Graphic({
   symbol: arrowSymbol
@@ -60,14 +75,13 @@ const arrowGraphic = new Graphic({
 
 const track = new Track({
   view: view,
-  graphic: arrowGraphic
+  graphics: [pointGraphic, arrowGraphic]
 });
 
+// Add the Track widget to the view
+view.ui.add(track, "top-right");
 
-       // Add the Track widget to the view
-  view.ui.add(track, "top-right");
-
-  function onGeolocationSuccess(position) {
+function onGeolocationSuccess(position) {
   const { heading } = position.coords;
 
   // Rotate the arrow symbol based on the device's heading.
