@@ -47,6 +47,7 @@
   type: "simple-marker",
   color: [255, 255, 255, 1], // white
   size: 10,
+  angle: 0,
   outline: {
     color: [0, 0, 0, 1], // black
     width: 1
@@ -97,6 +98,7 @@ function onGeolocationSuccess(position) {
 
   // Update the angle of the arrow symbol
   arrowSymbol.angle = heading || 0;
+  pointSymbol.angle = heading || 0;
   arrowGraphic.geometry = point;
 
   view.graphics.remove(arrowGraphic);
