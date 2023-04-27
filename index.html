@@ -54,11 +54,13 @@ const arrowSymbol = {
     width: 1
   },
   size: 25
+  angle: 160
 };
 
 
 const arrowGraphic = new Graphic({
   symbol: arrowSymbol
+  angle: 160
 });
 
 const track = new Track({
@@ -91,10 +93,7 @@ const track = new Track({
     //arrowGraphic.symbol.angle = heading;
 
   const heading = event.alpha ? event.alpha * -1 : 0;
- var newGraphic = arrowGraphic.clone();
-newGraphic.symbol.angle = heading;
-
-track.graphic = newGraphic;
+ arrowGraphic.symbol.angle = heading;
   console.log(heading);
 });
 
