@@ -93,7 +93,10 @@ const track = new Track({
     //arrowGraphic.symbol.angle = heading;
 
  heading = event.alpha ? event.alpha * -1 : 0;
- arrowGraphic.symbol.angle = heading;
+ arrowGraphic.symbol = {
+  angle: heading
+ }
+ //arrowGraphic.symbol.angle = heading;
   console.log(heading);
 });
 
