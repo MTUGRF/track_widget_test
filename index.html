@@ -42,14 +42,16 @@
         center: [-118.2437, 34.0522],
         zoom: 13
       });
+
+       view.when().then(function() {
 let heading; 
   
-
+let arrowGraphic;
 
  
 
 
-const arrowGraphic = new Graphic({
+arrowGraphic = new Graphic({
   symbol: {
      type: "simple-marker",
   path: "M10,0 L20,30 L10,20 L0,30 Z",
@@ -132,7 +134,7 @@ if (navigator.geolocation) {
 } else {
   console.error("Geolocation is not supported by this browser.");
 }
-
+});
     });
 
     
