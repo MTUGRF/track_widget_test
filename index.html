@@ -45,8 +45,13 @@
 let heading; 
   
 
-const arrowSymbol = {
-  type: "simple-marker",
+
+ 
+
+
+const arrowGraphic = new Graphic({
+  symbol: {
+     type: "simple-marker",
   path: "M10,0 L20,30 L10,20 L0,30 Z",
   color: [0, 0, 255, 1],
   outline: {
@@ -55,14 +60,9 @@ const arrowSymbol = {
   },
   size: 25,
   angle: heading
-};
-
-
-const arrowGraphic = new Graphic({
-  symbol: arrowSymbol,
-  angle: heading
+}
 });
-
+ 
 const track = new Track({
   view: view,
   graphic: arrowGraphic,
@@ -94,6 +94,14 @@ const track = new Track({
 
  heading = event.alpha ? event.alpha * -1 : 0;
  arrowGraphic.symbol = {
+  type: "simple-marker",
+  path: "M10,0 L20,30 L10,20 L0,30 Z",
+  color: [0, 0, 255, 1],
+  outline: {
+    color: [0, 0, 0, 1],
+    width: 1
+  },
+  size: 25,
   angle: heading
  }
  //arrowGraphic.symbol.angle = heading;
