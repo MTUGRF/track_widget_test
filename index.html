@@ -92,9 +92,10 @@ const track = new Track({
 
   const heading = event.alpha ? event.alpha * -1 : 0;
   var newSymbol = arrowGraphic.symbol.clone();
-newSymbol.angle = heading;
+
 
 arrowGraphic.symbol = newSymbol;
+newSymbol.angle = heading;
   console.log(heading);
 });
 
