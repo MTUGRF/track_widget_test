@@ -42,7 +42,7 @@
         center: [-118.2437, 34.0522],
         zoom: 13
       });
-
+let heading; 
   
 
 const arrowSymbol = {
@@ -54,13 +54,13 @@ const arrowSymbol = {
     width: 1
   },
   size: 25,
-  angle: 160
+  angle: heading
 };
 
 
 const arrowGraphic = new Graphic({
   symbol: arrowSymbol,
-  angle: 160
+  angle: heading
 });
 
 const track = new Track({
@@ -92,7 +92,7 @@ const track = new Track({
 
     //arrowGraphic.symbol.angle = heading;
 
-  const heading = event.alpha ? event.alpha * -1 : 0;
+ heading = event.alpha ? event.alpha * -1 : 0;
  arrowGraphic.symbol.angle = heading;
   console.log(heading);
 });
