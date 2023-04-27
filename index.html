@@ -91,10 +91,10 @@ const track = new Track({
     //arrowGraphic.symbol.angle = heading;
 
   const heading = event.alpha ? event.alpha * -1 : 0;
-  arrowSymbol.angle = heading;
-   
-  // Rotate the arrow symbol based on the device's heading.
-  //arrowSymbol.angle = 172;
+  var newSymbol = arrowGraphic.symbol.clone();
+newSymbol.angle = heading;
+
+arrowGraphic.symbol = newSymbol;
   console.log(heading);
 });
 
