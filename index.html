@@ -73,39 +73,26 @@ const track = new Track({
 
   function onGeolocationSuccess(position) {
     console.log(position);
-  let heading;
-  window.addEventListener("deviceorientation", (event) => {
-  console.log(`${event.alpha} : ${event.beta} : ${event.gamma}`);
 
-  heading = `${event.alpha}` * -1;
-/*
-  
-            if (`${event.webkitCompassHeading}`) {
-                // Safari
-                heading = `${event.webkitCompassHeading}`;
-                console.log(heading);
-            } else if (`${event.absolute}` === true) {
-              console.log(heading);
-                // non-Safari alpha increases counter clockwise around the z axis
-                heading = `${event.alpha}` * -1;
-                console.log(heading);
-            }*/
-  if (newGraphic) {
-    newGraphic.removeAll();
-    console.log('removed');
+ let previousGraphic;
+
+window.addEventListener("deviceorientation", (event) => {
+  // Get the updated heading from the device orientation event
+  let heading = `${event.alpha}` * -1;
+
+  // Remove the previous graphic from the view, if there is one
+  if (previousGraphic) {
+    view.graphics.remove(previousGraphic);
   }
   
-  var graphic = view.graphics.getItemAt(0);
-  
-    var newGraphic = graphic.clone();
-    view.graphics.remove(graphic);
-    newGraphic.symbol.angle = heading;
-    view.graphics.add(newGraphic);
-  
+  // Clone the original graphic and update its symbol angle with the heading
+  const newGraphic = arrowGraphic.clone();
+  view.graphics.remove(arrowGraphic);
+  newGraphic.symbol.angle = heading;
 
-  // Rotate the arrow symbol based on the device's heading.
-  //arrowSymbol.angle = 172;
-  console.log(heading);
+  // Add the new graphic to the view and store it as the previous graphic
+  view.graphics.add(newGraphic);
+  previousGraphic = newGraphic;
 });
 }
 
