@@ -88,7 +88,7 @@ window.addEventListener("deviceorientation", (event) => {
   
   // Clone the original graphic and update its symbol angle with the heading
   const newGraphic = arrowGraphic.clone();
-  view.graphics.remove(arrowGraphic);
+  view.graphics.removeAll();
 
   newGraphic.symbol.angle = heading;
 
