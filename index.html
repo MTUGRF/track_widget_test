@@ -30,11 +30,10 @@
       "esri/geometry/Point"
     ], function(Map, MapView, Track, Graphic, SimpleLineSymbol, SimpleMarkerSymbol, SimpleFillSymbol, Point) {
 
-      // Create a new Map instance
+       // Create a new Map instance
       const map = new Map({
         basemap: "satellite"
       });
-
       // Create a new MapView instance
       const view = new MapView({
         container: "viewDiv",
@@ -42,60 +41,8 @@
         center: [-118.2437, 34.0522],
         zoom: 13
       });
-
-       view.when().then(function() {
-let heading; 
   
-let arrowGraphic;
-
- 
-
-
-arrowGraphic = new Graphic({
-  symbol: {
-     type: "simple-marker",
-  path: "M10,0 L20,30 L10,20 L0,30 Z",
-  color: [0, 0, 255, 1],
-  outline: {
-    color: [0, 0, 0, 1],
-    width: 1
-  },
-  size: 25,
-  angle: heading
-}
-});
- 
-const track = new Track({
-  view: view,
-  graphic: arrowGraphic,
-  useHeadingEnabled: false
-});
-
-
-       // Add the Track widget to the view
-  view.ui.add(track, "top-right");
-   
-  window.addEventListener("deviceorientation", (event) => {
-  console.log(`${event.alpha} : ${event.beta} : ${event.gamma} : ${event.absolute} : ${event.webkitCompassHeading}`);
-
-  //heading = `${event.alpha}` * -1;
-/*
-  
-            if (`${event.webkitCompassHeading}`) {
-                // Safari
-                heading = `${event.webkitCompassHeading}`;
-                console.log(heading);
-            } else if (`${event.absolute}` === true) {
-              console.log(heading);
-                // non-Safari alpha increases counter clockwise around the z axis
-                heading = `${event.alpha}` * -1;
-                console.log(heading);
-            }*/
-
-    //arrowGraphic.symbol.angle = heading;
-
- heading = event.alpha ? event.alpha * -1 : 0;
- arrowGraphic.symbol = {
+const arrowSymbol = {
   type: "simple-marker",
   path: "M10,0 L20,30 L10,20 L0,30 Z",
   color: [0, 0, 255, 1],
@@ -103,10 +50,37 @@ const track = new Track({
     color: [0, 0, 0, 1],
     width: 1
   },
-  size: 25,
-  angle: heading
- }
- //arrowGraphic.symbol.angle = heading;
+  size: 25
+};
+const arrowGraphic = new Graphic({
+  symbol: arrowSymbol
+});
+const track = new Track({
+  view: view,
+  graphic: arrowGraphic,
+  useHeadingEnabled: false
+});
+       // Add the Track widget to the view
+  view.ui.add(track, "top-right");
+
+  //function onGeolocationSuccess(position) {
+//    console.log(position);
+
+    let heading;
+  window.addEventListener("deviceorientation", (event) => {
+  console.log(`${event.alpha} : ${event.beta} : ${event.gamma}`);
+  console.log(`${event.alpha} : ${event.beta} : ${event.gamma} : ${event.absolute} : ${event.webkitCompassHeading}`);
+
+  heading = `${event.alpha}` * -1;
+
+  var graphic = view.graphics.getItemAt(0);
+  
+  var graphic = view.graphics.getItemAt(0);
+
+    var newGraphic = graphic.clone();
+    view.graphics.remove(graphic);
+    newGraphic.symbol.angle = heading;
+
   console.log(heading);
 });
 
@@ -134,7 +108,7 @@ if (navigator.geolocation) {
 } else {
   console.error("Geolocation is not supported by this browser.");
 }
-});
+//}
     });
 
     
