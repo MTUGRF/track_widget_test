@@ -90,11 +90,13 @@ const track = new Track({
                 heading = `${event.alpha}` * -1;
                 console.log(heading);
             }*/
-
-  var graphic = view.graphics.getItemAt(0);
   if (newGraphic) {
-    view.graphics.remove(newGraphic);
+    newGraphic.removeAll();
+    console.log('removed');
   }
+  
+  var graphic = view.graphics.getItemAt(0);
+  
     var newGraphic = graphic.clone();
     view.graphics.remove(graphic);
     newGraphic.symbol.angle = heading;
