@@ -83,11 +83,13 @@ window.addEventListener("deviceorientation", (event) => {
   // Remove the previous graphic from the view, if there is one
   if (previousGraphic) {
     view.graphics.remove(previousGraphic);
+    //view.graphics.remove(arrowGraphic);
   }
   
   // Clone the original graphic and update its symbol angle with the heading
   const newGraphic = arrowGraphic.clone();
-  view.graphics.remove(arrowGraphic);
+  view.graphics.remove(arrpwGraphic);
+
   newGraphic.symbol.angle = heading;
 
   // Add the new graphic to the view and store it as the previous graphic
