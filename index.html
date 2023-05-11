@@ -42,6 +42,7 @@
         // and add it to the view's UI 
         var track = new Track({
           view: view, 
+          useHeadingEnabled: false,
           goToLocationEnabled: true, 
           geolocationOptions: { maximumAge: 0, timeout: 15000, enableHighAccuracy: true }
         });
