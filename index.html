@@ -1,63 +1,129 @@
+<!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="initial-scale=1,maximum-scale=1,user-scalable=no"
-    />
-    <title>
-      Track current location | Sample | ArcGIS API for JavaScript 4.23
-    </title>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>ArcGIS JS API - Track Widget Example</title>
+  <link rel="stylesheet" href="https://js.arcgis.com/4.26/esri/themes/light/main.css">
+  <script src="https://js.arcgis.com/4.26/"></script>
 
-    <style>
-      html,
-      body,
-      #viewDiv {
-        padding: 0;
-        margin: 0;
-        height: 100%;
-        width: 100%;
-      }
-    </style>
-    <link rel="stylesheet" href="https://js.arcgis.com/next/esri/themes/light/main.css">
-  
-   <script src="https://js.arcgis.com/next/"></script>
+  <style>
+    html, body, #viewDiv {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+    }
+  </style>
+</head>
 
-    <script>
-      require([
-        "esri/widgets/Track",
-        "esri/views/MapView",
-        "esri/Map"
-      ], function (Track, MapView, Map) {
-        var map = new Map({
-          basemap: "topo-vector"
-        });
+<div id="viewDiv"></div>
+  <script>
+    require([
+      "esri/Map",
+      "esri/views/MapView",
+      "esri/widgets/Track",
+      "esri/Graphic",
+      "esri/symbols/SimpleLineSymbol",
+      "esri/symbols/SimpleMarkerSymbol",
+      "esri/symbols/SimpleFillSymbol",
+      "esri/geometry/Point"
+    ], function(Map, MapView, Track, Graphic, SimpleLineSymbol, SimpleMarkerSymbol, SimpleFillSymbol, Point) {
 
-        var view = new MapView({
-          map: map,
-          container: "viewDiv"
-        });
-
-        // Create an instance of the Track widget
-        // and add it to the view's UI 
-        var track = new Track({
-          view: view, 
-          useHeadingEnabled: false,
-          goToLocationEnabled: true, 
-          geolocationOptions: { maximumAge: 0, timeout: 15000, enableHighAccuracy: true }
-        });
-        view.ui.add(track, "top-left"); 
-
-        // The sample will start tracking your location
-        // once the view becomes ready
-        view.when(function () {
-          track.start();
-        });
+      // Create a new Map instance
+      const map = new Map({
+        basemap: "satellite"
       });
-    </script>
-  </head>
 
-  <body>
-    <div id="viewDiv"></div>
+      // Create a new MapView instance
+      const view = new MapView({
+        container: "viewDiv",
+        map: map,
+        center: [-118.2437, 34.0522],
+        zoom: 13
+      });  
+
+
+
+const track = new Track({
+  view: view, 
+  useHeadingEnabled: false
+});
+
+
+       // Add the Track widget to the view
+  view.ui.add(track, "top-right");
+
+  function onGeolocationSuccess(position) {
+    console.log(position);
+
+ let previousGraphic;
+
+window.addEventListener("deviceorientation", (event) => {
+  const arrowSymbol = {
+  type: "simple-marker",
+  path: "M10,0 L20,30 L10,20 L0,30 Z",
+  color: [0, 0, 255, 1],
+  outline: {
+    color: [0, 0, 0, 1],
+    width: 1
+  },
+  size: 25
+};
+
+
+const arrowGraphic = new Graphic({
+  symbol: arrowSymbol,
+  geometry: new Point({
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude
+      })
+});
+  // Get the updated heading from the device orientation event
+  let heading = `${event.alpha}` * -1;
+
+  // Remove the previous graphic from the view, if there is one
+  if (previousGraphic) {
+    view.graphics.remove(previousGraphic);
+    //view.graphics.remove(arrowGraphic);
+  }
+  
+  // Clone the original graphic and update its symbol angle with the heading
+  const newGraphic = arrowGraphic.clone();
+  view.graphics.removeAll();
+
+  newGraphic.symbol.angle = heading;
+
+  // Add the new graphic to the view and store it as the previous graphic
+  view.graphics.add(newGraphic);
+  previousGraphic = newGraphic;
+});
+}
+
+function onGeolocationError(error) {
+  console.error("Geolocation error: ", error);
+}
+
+const geolocationOptions = {
+  enableHighAccuracy: true,
+  maximumAge: 0,
+  timeout: 50
+};
+
+if (navigator.geolocation) {
+  navigator.geolocation.watchPosition(
+    onGeolocationSuccess,
+    onGeolocationError,
+    geolocationOptions
+  );
+} else {
+  console.error("Geolocation is not supported by this browser.");
+}
+
+    });
+
+    
+
+    </script>
   </body>
-</html>
+  </html>
