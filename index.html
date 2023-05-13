@@ -16,19 +16,17 @@
     }
   </style>
 </head>
+<body>
+  <div id="viewDiv"></div>
 
-<div id="viewDiv"></div>
   <script>
     require([
       "esri/Map",
       "esri/views/MapView",
       "esri/widgets/Track",
       "esri/Graphic",
-      "esri/symbols/SimpleLineSymbol",
-      "esri/symbols/SimpleMarkerSymbol",
-      "esri/symbols/SimpleFillSymbol",
-      "esri/geometry/Point"
-    ], function(Map, MapView, Track, Graphic, SimpleLineSymbol, SimpleMarkerSymbol, SimpleFillSymbol, Point) {
+      "esri/symbols/SimpleMarkerSymbol"
+    ], function(Map, MapView, Track, Graphic, SimpleMarkerSymbol) {
 
       // Create a new Map instance
       const map = new Map({
@@ -41,89 +39,84 @@
         map: map,
         center: [-118.2437, 34.0522],
         zoom: 13
-      });  
+      });
 
+      const arrowSymbol = {
+        type: "simple-marker",
+        path: "M10,0 L20,30 L10,20 L0,30 Z",
+        color: [0, 0, 255, 1],
+        outline: {
+          color: [0, 0, 0, 1],
+          width: 1
+        },
+        size: 25
+      };
 
+      const arrowGraphic = new Graphic({
+        symbol: arrowSymbol
+      });
 
-const track = new Track({
-  view: view, 
-  useHeadingEnabled: false
-});
+      const track = new Track({
+        view: view, 
+        graphic: arrowGraphic,
+        useHeadingEnabled: false
+      });
 
+      // Add the Track widget to the view
+      view.ui.add(track, "top-right");
 
-       // Add the Track widget to the view
-  view.ui.add(track, "top-right");
+      let gpsGraphic;
 
-  function onGeolocationSuccess(position) {
-    console.log(position);
+      function onGeolocationSuccess(position) {
+        const { latitude, longitude } = position.coords;
 
- let previousGraphic;
+        // Remove the previous GPS graphic from the view, if there is one
+        if (gpsGraphic) {
+          view.graphics.remove(gpsGraphic);
+        }
+        
+        // Create a new GPS graphic at the current location
+        const gpsPoint = {
+          type: "point",
+          longitude: longitude,
+          latitude: latitude
+        };
 
-window.addEventListener("deviceorientation", (event) => {
-  const arrowSymbol = {
-  type: "simple-marker",
-  path: "M10,0 L20,30 L10,20 L0,30 Z",
-  color: [0, 0, 255, 1],
-  outline: {
-    color: [0, 0, 0, 1],
-    width: 1
-  },
-  size: 25
-};
+        const gpsSymbol = new SimpleMarkerSymbol({
+          color: [0, 255, 0],
+          size: 15
+        });
 
+        gpsGraphic = new Graphic({
+          geometry: gpsPoint,
+          symbol: gpsSymbol
+        });
 
-const arrowGraphic = new Graphic({
-  symbol: arrowSymbol,
-  geometry: new Point({
-        latitude: position.coords.latitude,
-        longitude: position.coords.longitude
-      })
-});
-  // Get the updated heading from the device orientation event
-  let heading = `${event.alpha}` * -1;
+        // Add the GPS graphic to the view
+        view.graphics.add(gpsGraphic);
+      }
 
-  // Remove the previous graphic from the view, if there is one
-  if (previousGraphic) {
-    view.graphics.remove(previousGraphic);
-    //view.graphics.remove(arrowGraphic);
-  }
-  
-  // Clone the original graphic and update its symbol angle with the heading
-  const newGraphic = arrowGraphic.clone();
-  view.graphics.removeAll();
+      function onGeolocationError(error) {
+        console.error("Geolocation error: ", error);
+      }
 
-  newGraphic.symbol.angle = heading;
+      const geolocationOptions = {
+        enableHighAccuracy: true,
+        maximumAge: 0,
+        timeout: 50
+      };
 
-  // Add the new graphic to the view and store it as the previous graphic
-  view.graphics.add(newGraphic);
-  previousGraphic = newGraphic;
-});
-}
-
-function onGeolocationError(error) {
-  console.error("Geolocation error: ", error);
-}
-
-const geolocationOptions = {
-  enableHighAccuracy: true,
-  maximumAge: 0,
-  timeout: 50
-};
-
-if (navigator.geolocation) {
-  navigator.geolocation.watchPosition(
-    onGeolocationSuccess,
-    onGeolocationError,
-    geolocationOptions
-  );
-} else {
-  console.error("Geolocation is not supported by this browser.");
-}
+      if (navigator.geolocation) {
+        navigator.geolocation.watchPosition(
+          onGeolocationSuccess,
+          onGeolocationError,
+          geolocationOptions
+        );
+      } else {
+        console.error("Geolocation is not supported by this browser.");
+      }
 
     });
-
-    
-
-    </script>
-  </body>
-  </html>
+  </script>
+</body>
+</html>
