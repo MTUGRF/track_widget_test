@@ -90,7 +90,7 @@ const arrowGraphic = new Graphic({
   
   // Clone the original graphic and update its symbol angle with the heading
   const newGraphic = arrowGraphic.clone();
-  
+  view.graphics.removeAll();
 
   newGraphic.symbol.angle = heading;
 
