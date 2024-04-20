@@ -48,7 +48,18 @@
 const track = new Track({
   view: view, 
   useHeadingEnabled: false,
-  graphic: "arrowGraphic"
+  graphic: new Graphic({
+            symbol: {
+              type: "simple-marker",
+              size: "12px",
+              color: [51, 204, 51, 0],
+
+              outline: {
+                color: [51, 204, 51, 0],
+                width: "1.5px"
+              }
+            }
+          }),
 });
 
 
