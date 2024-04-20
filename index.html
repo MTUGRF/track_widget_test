@@ -59,7 +59,7 @@ const track = new Track({
 
  let previousGraphic;
 
-window.addEventListener("deviceorientation", (event) => {
+window.addEventListener("deviceorientationabsolute", (event) => {
    const heading = event.alpha * -1;
   const arrowSymbol = {
   type: "simple-marker",
