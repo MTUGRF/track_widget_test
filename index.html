@@ -82,6 +82,8 @@ const arrowGraphic = new Graphic({
   // Get the updated heading from the device orientation event
   let heading = `${event.alpha}` * -1;
 
+  arrowGraphic.symbol.angle = heading;
+
   // Remove the previous graphic from the view, if there is one
   if (previousGraphic) {
     view.graphics.remove(previousGraphic);
