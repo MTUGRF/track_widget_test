@@ -60,6 +60,7 @@ const track = new Track({
  let previousGraphic;
 
 window.addEventListener("deviceorientation", (event) => {
+   const heading = event.alpha * -1;
   const arrowSymbol = {
   type: "simple-marker",
   path: "M10,0 L20,30 L10,20 L0,30 Z",
@@ -82,7 +83,7 @@ const arrowGraphic = new Graphic({
   // Get the updated heading from the device orientation event
  // let heading = `${event.alpha}` * -1;
 
-  const heading = event.alpha ? event.alpha * -1 : 0;
+ 
 
   arrowGraphic.symbol.angle = heading;
 
