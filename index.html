@@ -80,7 +80,9 @@ const arrowGraphic = new Graphic({
       })
 });
   // Get the updated heading from the device orientation event
-  let heading = `${event.alpha}` * -1;
+ // let heading = `${event.alpha}` * -1;
+
+  const heading = event.alpha ? event.alpha * -1 : 0;
 
   arrowGraphic.symbol.angle = heading;
 
