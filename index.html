@@ -110,6 +110,65 @@ const arrowGraphic = new Graphic({
  
 function rotateMarker () {
   arrowGraphic.symbol.angle = heading;
+}
+
+  // Remove the previous graphic from the view, if there is one
+  if (previousGraphic) {
+    view.graphics.remove(previousGraphic);
+    //view.graphics.remove(arrowGraphic);
+  }
+  
+  // Clone the original graphic and update its symbol angle with the heading
+  const newGraphic = arrowGraphic.clone();
+  view.graphics.removeAll();
+
+  newGraphic.symbol.angle = heading;
+
+  // Add the new graphic to the view and store it as the previous graphic
+  view.graphics.add(newGraphic, 9999999);
+  previousGraphic = newGraphic;
+
+
+  
+});
+    
+} else {
+  window.addEventListener("deviceorientation", (event) => {
+    console.log(event);
+//const heading = 
+  const arrowSymbol = {
+  type: "simple-marker",
+  path: "M10,0 L20,30 L10,20 L0,30 Z",
+  color: [0, 0, 255, 1],
+  outline: {
+    color: [0, 0, 0, 1],
+    width: 1
+  },
+  size: 25
+};
+
+
+const arrowGraphic = new Graphic({
+  symbol: arrowSymbol,
+  geometry: new Point({
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude
+      })
+});
+
+ if (event.webkitCompassHeading) {
+                // Safari
+                heading = event.webkitCompassHeading;
+            } else if (event.absolute === true) {
+                // non-Safari alpha increases counter clockwise around the z axis
+                heading =  event.alpha * -1;
+            }
+            setTimeout(rotateMarker, 20);
+   
+
+ 
+function rotateMarker () {
+  arrowGraphic.symbol.angle = heading;
 
   // Remove the previous graphic from the view, if there is one
   if (previousGraphic) {
@@ -130,8 +189,6 @@ function rotateMarker () {
 }
   
 });
-    
-} else {
     // $FlowFixMe[method-unbinding]
    /// window.addEventListener('deviceorientation', this._onDeviceOrientation);
     console.log('not');
