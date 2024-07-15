@@ -19,125 +19,111 @@
 
 <div id="viewDiv"></div>
   <script>
-    require([
-      "esri/Map",
-      "esri/views/MapView",
-      "esri/widgets/Track",
-      "esri/Graphic",
-      "esri/symbols/SimpleLineSymbol",
-      "esri/symbols/SimpleMarkerSymbol",
-      "esri/symbols/SimpleFillSymbol",
-      "esri/geometry/Point"
-    ], function(Map, MapView, Track, Graphic, SimpleLineSymbol, SimpleMarkerSymbol, SimpleFillSymbol, Point) {
+   require([
+  "esri/Map",
+  "esri/views/MapView",
+  "esri/widgets/Track",
+  "esri/Graphic",
+  "esri/symbols/SimpleMarkerSymbol",
+  "esri/geometry/Point"
+], function(Map, MapView, Track, Graphic, SimpleMarkerSymbol, Point) {
 
-      // Create a new Map instance
-      const map = new Map({
-        basemap: "satellite"
-      });
+  // Create a new Map instance
+  const map = new Map({
+    basemap: "satellite"
+  });
 
-      // Create a new MapView instance
-      const view = new MapView({
-        container: "viewDiv",
-        map: map,
-        center: [-118.2437, 34.0522],
-        zoom: 13
-      });  
+  // Create a new MapView instance
+  const view = new MapView({
+    container: "viewDiv",
+    map: map,
+    center: [-118.2437, 34.0522],
+    zoom: 13
+  });
 
+  const track = new Track({
+    view: view, 
+    useHeadingEnabled: false,
+    graphic: new Graphic({
+      symbol: {
+        type: "simple-marker",
+        size: "12px",
+        color: [51, 204, 51, 0],
+        outline: {
+          color: [51, 204, 51, 0],
+          width: "1.5px"
+        }
+      }
+    }),
+  });
 
-
-const track = new Track({
-  view: view, 
-  useHeadingEnabled: false,
-  graphic: new Graphic({
-            symbol: {
-              type: "simple-marker",
-              size: "12px",
-              color: [51, 204, 51, 0],
-
-              outline: {
-                color: [51, 204, 51, 0],
-                width: "1.5px"
-              }
-            }
-          }),
-});
-
-
-       // Add the Track widget to the view
+  // Add the Track widget to the view
   view.ui.add(track, "top-right");
+
+  let arrowGraphic;
 
   function onGeolocationSuccess(position) {
     console.log(position);
 
- let previousGraphic;
+    if (!arrowGraphic) {
+      const arrowSymbol = {
+        type: "simple-marker",
+        path: "M10,0 L20,30 L10,20 L0,30 Z",
+        color: [0, 0, 255, 1],
+        outline: {
+          color: [0, 0, 0, 1],
+          width: 1
+        },
+        size: 25
+      };
 
-window.addEventListener("deviceorientationabsolute", (event) => {
-   const heading = event.alpha * -1;
-  const arrowSymbol = {
-  type: "simple-marker",
-  path: "M10,0 L20,30 L10,20 L0,30 Z",
-  color: [0, 0, 255, 1],
-  outline: {
-    color: [0, 0, 0, 1],
-    width: 1
-  },
-  size: 25
-};
+      arrowGraphic = new Graphic({
+        symbol: arrowSymbol,
+        geometry: new Point({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude
+        })
+      });
 
-
-const arrowGraphic = new Graphic({
-  symbol: arrowSymbol,
-  geometry: new Point({
+      view.graphics.add(arrowGraphic);
+    } else {
+      arrowGraphic.geometry = new Point({
         latitude: position.coords.latitude,
         longitude: position.coords.longitude
-      })
-});
-  // Get the updated heading from the device orientation event
- // let heading = `${event.alpha}` * -1;
-
- 
-
-  arrowGraphic.symbol.angle = heading;
-
-  // Remove the previous graphic from the view, if there is one
-  if (previousGraphic) {
-    view.graphics.remove(previousGraphic);
-    //view.graphics.remove(arrowGraphic);
+      });
+    }
   }
-  
-  // Clone the original graphic and update its symbol angle with the heading
-  const newGraphic = arrowGraphic.clone();
-  view.graphics.removeAll();
 
-  newGraphic.symbol.angle = heading;
+  function onGeolocationError(error) {
+    console.error("Geolocation error: ", error);
+  }
 
-  // Add the new graphic to the view and store it as the previous graphic
-  view.graphics.add(newGraphic, 9999999);
-  previousGraphic = newGraphic;
+  window.addEventListener("deviceorientationabsolute", (event) => {
+    if (arrowGraphic) {
+      const heading = event.alpha * -1;
+      arrowGraphic.symbol.angle = heading;
+      view.graphics.add(arrowGraphic);
+    }
+  });
+
+  const geolocationOptions = {
+    enableHighAccuracy: true,
+    maximumAge: 0,
+    timeout: 500000
+  };
+
+  if (navigator.geolocation) {
+    navigator.geolocation.watchPosition(
+      onGeolocationSuccess,
+      onGeolocationError,
+      geolocationOptions
+    );
+  } else {
+    console.error("Geolocation is not supported by this browser.");
+  }
+
 });
-}
 
-function onGeolocationError(error) {
-  console.error("Geolocation error: ", error);
-}
-
-const geolocationOptions = {
-  enableHighAccuracy: true,
-  maximumAge: 0,
-  timeout: 500000
-};
-
-if (navigator.geolocation) {
-  navigator.geolocation.watchPosition(
-    onGeolocationSuccess,
-    onGeolocationError,
-    geolocationOptions
-  );
-} else {
-  console.error("Geolocation is not supported by this browser.");
-}
-
-    });
 
     
 
